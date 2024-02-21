@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     public float health = 10; // Damage needed to destroy this enemy
     public int score = 100; // Points earned for destroying this
 
-    private BoundsCheck bndCheck;
+    protected BoundsCheck bndCheck;
 
     void Awake() {
         bndCheck = GetComponent<BoundsCheck>();
