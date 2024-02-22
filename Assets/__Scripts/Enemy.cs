@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 using UnityEngine.Scripting.APIUpdating;
 
@@ -49,13 +51,34 @@ public class Enemy : MonoBehaviour
         pos = tempPos;
     }
 
+    // void OnCollisionEnter(Collision coll) {
+    //     GameObject otherGO = coll.gameObject;
+    //     if (otherGO.GetComponent<ProjectileHero>() != null) {
+    //         Destroy(otherGO);
+    //         Destroy(gameObject);
+    //     } else {
+    //         Debug.Log("Enemy hit by non-ProjectileHero: " + otherGO.name);
+    //     }
+    // }
+
     void OnCollisionEnter(Collision coll) {
         GameObject otherGO = coll.gameObject;
-        if (otherGO.GetComponent<ProjectileHero>() != null) {
+        // Check for collisions with ProjectileHero
+        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
+        if (p != null) {
+            // Only damage this Enemy if it's on screen
+            if (bndCheck.isOnScreen) {
+                // Get the damage amount from the MAIN WEAP_DICT
+                health -= Main.GET_WEAPON_DEFINITION(p.type).damageOnHit;
+                if (health <= 0) {
+                    // Destroy the Enemy
+                    Destroy(this.gameObject);
+                }
+            }
+            // Destroy the ProjectileHero regardless
             Destroy(otherGO);
-            Destroy(gameObject);
         } else {
-            Debug.Log("Enemy hit by non-ProjectileHero: " + otherGO.name);
+            print("Enemy hit by non-ProjectileHero: " + otherGO.name);
         }
     }
 }
